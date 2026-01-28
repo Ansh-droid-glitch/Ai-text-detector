@@ -70,7 +70,7 @@ class BertClassifier(nn.Module):
 
 #train
 
-device = torch.device("cpu")
+device = torch.device("gpu")
 
 model = BertClassifier().to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
@@ -141,4 +141,5 @@ def predict(text):
         logits = model(enc["input_ids"], enc["attention_mask"])
 
     return "AI" if torch.argmax(logits, dim=1).item() == 1 else "Human"
+
 
