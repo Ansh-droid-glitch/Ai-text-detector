@@ -70,7 +70,10 @@ class BertClassifier(nn.Module):
 
 #train
 
-device = torch.device("gpu")
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
 
 model = BertClassifier().to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
@@ -108,9 +111,9 @@ def eval_epoch():
 
     with torch.no_grad():
         for i in range(0, len(y_val), BATCH_SIZE):
-            ids = X_val_ids[i:i+BATCH_SIZE]
-            mask = X_val_mask[i:i+BATCH_SIZE]
-            labels = y_val[i:i+BATCH_SIZE]
+            ids = X_val_ids[i:i+BATCH_SIZE].to(device)
+            mask = X_val_mask[i:i+BATCH_SIZE].to(device)
+            labels = y_val[i:i+BATCH_SIZE].to(device)
 
             logits = model(ids, mask)
             preds = torch.argmax(logits, dim=1)
@@ -137,9 +140,10 @@ def predict(text):
         max_length=256
     )
 
+    ids = enc["input_ids"].to(device)
+    mask = enc["attention_mask"].to(device)
+
     with torch.no_grad():
-        logits = model(enc["input_ids"], enc["attention_mask"])
+        logits = model(ids, mask)
 
     return "AI" if torch.argmax(logits, dim=1).item() == 1 else "Human"
-
-
