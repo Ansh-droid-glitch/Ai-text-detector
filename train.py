@@ -129,6 +129,8 @@ for epoch in range(3):
     acc = eval_epoch()
     print(f"Epoch {epoch+1} | Loss: {loss:.4f} | Val Acc: {acc:.4f}")
 
+torch.save(model.state_dict(), "bert_classifier.pt")
+
 #prediction
 
 def predict(text):
