@@ -21,7 +21,7 @@ labels = torch.tensor(labels)
 
 
 #setup yokenizer
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 
 enc = tokenizer(
     texts,
@@ -149,3 +149,4 @@ def predict(text):
         logits = model(ids, mask)
 
     return "AI" if torch.argmax(logits, dim=1).item() == 1 else "Human"
+
